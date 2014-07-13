@@ -6,7 +6,7 @@ function message
 	clear;
 	echo "+-----------------------------------------+";
 	echo "| Welcome to easy v-host                  |";
-	echo "| for use with the build in mac apache2   |";
+	echo "| for use with the built in mac apache2   |";
 	echo "| ©2014 Kevin Richter - Version 1.0.0     |";
 	echo "+-----------------------------------------+";
 }
@@ -167,9 +167,9 @@ function first_run
 	if [ ${answer} == "y" ];
 	then
 		echo "creating folder";
-		#mkdir -p /etc/apache2/sites;
+		mkdir -p /etc/apache2/sites;
 		echo "writing to http.conf";
-		#echo "Include /private/etc/apache2/sites/*" >> /etc/apache2/httpd.conf;
+		echo "Include /private/etc/apache2/sites/*" >> /etc/apache2/httpd.conf;
 	else
 		echo "see you later";
 	fi
