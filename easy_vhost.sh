@@ -14,11 +14,10 @@ function message
 #checks if the script is run as root
 function is_root
 {
-	if [ "$(id -u)" == "1" ];
-	then
-		echo "Won't run as root" 1>&2;
-		exit 1;
-	fi;
+    if [[ $EUID -ne 0 ]]; then
+        echo "This script must be run as root" 1>&2
+        exit 1
+    fi
 }
 
 #restart apache
