@@ -91,7 +91,7 @@ function remove_file
     for entry in /etc/apache2/sites/*;
     do
         ((i++))
-        if [ "$number" == "$i" ];
+        if [ "$1" == "$i" ];
         then
             echo "removing $entry";
             rm ${entry};
@@ -107,20 +107,20 @@ function remove_file
 #show the programs menu
 function menu
 {
-	echo "press 1 to add a virtualhost";
-	echo "press 2 to remove a virtualhost";
-	echo "press 3 if this is your first run";
+	echo "press 1 if this is your first run";
+	echo "press 2 to add a virtualhost";
+	echo "press 3 to remove a virtualhost";
 	read -p "Number: " menu_choice;
 
 	if [ ${menu_choice} == "1" ];
 	then
-		add_vhost;
+		first_run;
 	elif [ ${menu_choice} == "2" ];
 	then
-		remove_vhost;
+		add_vhost;
 	elif [ ${menu_choice} == "3" ];
 	then
-		first_run;
+		remove_vhost;
 	else
 		echo "not a valid char/number";
 		menu;
@@ -150,7 +150,7 @@ function remove_vhost
 	get_list;
 
 	read -p "Number: " number;
-	remove_file $number;
+	remove_file number;
 
 	restart_apache;
 }
