@@ -75,6 +75,7 @@ function write_virtual_host
 #gives a list of files in the /etc/apache2/sites
 function get_list
 {
+	echo "0 back to menu"
     i=0;
     for entry in /etc/apache2/sites/*;
     do
@@ -150,6 +151,12 @@ function remove_vhost
 	get_list;
 
 	read -p "Number: " number;
+	if [ "$number" == "0" ];
+	then
+		message;
+		menu;
+		return;
+	fi
 	remove_file number;
 
 	restart_apache;
