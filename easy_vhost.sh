@@ -160,6 +160,8 @@ function remove_vhost
 #and add a line to the http.conf so that apache knows to load the configs from there
 function first_run
 {
+	message;
+
 	echo "we will now setup your machine for use with easy vhost";
 	echo "i will create a folder and write some stuff to your httpd.conf"
 	read -p "are you okay with this? (y/n)" answer;
