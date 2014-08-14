@@ -104,13 +104,15 @@ function first_run()
 	read -p "Are you okay with this? (Y/n): " answer;
 	if [ ${answer} == "n" ];
 	then
-		echo "see you later";
+		echo "See you later";
 	else
 		echo "creating folder";
 		mkdir -p ${vhost_folder};
 		echo "writing to http.conf";
 		echo "Include /private/etc/apache2/sites/*" >> /etc/apache2/httpd.conf;
 
+		echo "Your system was setup succesfully";
+		read -n 1 -P "Press any key to continue";
 		menu;
 	fi
 }
@@ -147,6 +149,8 @@ function create_folder
 		if [ ${folder_answer} == "y" ];
 		then
 			mkdir -p ${path};
+			parentdir=$(dirname ${path});
+			#chmod the dir and change owner
 		fi
 	fi
 }
