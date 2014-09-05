@@ -109,7 +109,7 @@ function first_run()
 		echo "creating folder";
 		mkdir -p ${vhost_folder};
 		echo "writing to http.conf";
-		echo "Include /private/etc/apache2/sites/*" >> /etc/apache2/httpd.conf;
+		echo "Include $vhost_folder" >> /etc/apache2/httpd.conf;
 
 		echo "Your system was setup succesfully";
 		read -n 1 -P "Press any key to continue";
