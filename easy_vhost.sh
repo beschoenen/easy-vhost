@@ -42,22 +42,13 @@ function menu()
 	echo "Press 4 to edit a virtualhost";
 	read -p "Number: " menu_choice;
 
-	if [ ${menu_choice} == "1" ];
-	then
-		first_run;
-	elif [ ${menu_choice} == "2" ];
-	then
-		add_vhost;
-	elif [ ${menu_choice} == "3" ];
-	then
-		remove_vhost;
-	elif [ ${menu_choice} == "4" ];
-	then
-		edit_vhost;
-	else
-		echo "not a valid menu item";
-		menu;
-	fi
+	case "$menu_choice" in
+		"1") first_run;;
+		"2") add_vhost;;
+		"3") remove_vhost;;
+		"4") edit_vhost;;
+		*)	 echo "not a valid menu item" && menu;;
+	esac
 }
 
 #restart apache
