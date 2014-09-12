@@ -164,6 +164,7 @@ function write_virtual_host()
 	"\tOptions Indexes FollowSymlinks MultiViews\n" \
 	"\tAllowOverride All\n" \
 	"\tOrder allow,deny\n" \
+	"\tRequire all granted\n" \
 	"\tAllow from all\n" \
 	"</Directory>\n" \
 	"<VirtualHost *:80>\n" \
