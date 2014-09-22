@@ -136,6 +136,9 @@ function add_vhost
 	write_virtual_host ${host} ${path};
 
 	restart_apache;
+
+	sleep 2;
+	menu;
 }
 
 #create a folder for the vhosts if it doesnt exist
@@ -150,12 +153,14 @@ function create_folder
 		then
 			mkdir -p ${path};
 			parentdir=$(dirname ${path});
+			#chown ${whoami} ${path};
+			#chmod 755 ${path};
 			#chmod the dir and change owner
 		fi
 	fi
 }
 
-#writes entry to /et/hosts
+#writes entry to /etc/hosts
 function write_hosts_entry()
 {
 	echo "Writing host configuration";
@@ -209,12 +214,18 @@ function remove_file()
 		((i++))
 		if [ "$1" == "$i" ];
 		then
-			echo "removing ${entry}";
-			rm ${entry};
+			read -p "Are you sure that you want to remove the vhost? (Y/n): " removehost_answer;
+			if [ ${removehost_answer} != "n" ];
+			then
+				echo "removing ${entry}";
+				rm ${entry};
 
-			echo "removing hosts entry";
-			local host=${entry##/*/}
-			sed -i .bak "/${host}/d" ${hosts_file};
+				echo "removing hosts entry";
+				local host=${entry##/*/};
+				sed -i .bak "/${host}/d" ${hosts_file};
+			else
+				remove_vhost;
+			fi
 			break;
 		fi
 	done
@@ -229,7 +240,7 @@ function remove_file()
 function edit_vhost()
 {
 	message;
-	echo "Edit a vhost"
+	echo "Edit a vhost";
 
 	list_vhosts;
 
