@@ -120,7 +120,16 @@ function add_vhost
 	message;
 
 	read -p "Url: " host;
+	while [[ "$host" == "" ]] ; do
+		echo "Please enter a url for your vhost"
+		read -p "Url: " host;
+	done
+
 	read -e -p "Path: " path;
+	while [[ "$path" = "" ]] ; do
+		echo "Please enter the path where your files are located"
+		read -e -p "Path: " path;
+	done
 
 	create_folder ${path}
 	write_hosts_entry ${host};
@@ -181,8 +190,8 @@ function write_virtual_host()
 function remove_vhost()
 {
 	message;
-
 	echo "Remove a vhost";
+
 	list_vhosts;
 
 	remove_file ${menu_select};
@@ -220,6 +229,7 @@ function remove_file()
 function edit_vhost()
 {
 	message;
+	echo "Edit a vhost"
 
 	list_vhosts;
 
