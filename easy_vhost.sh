@@ -79,11 +79,6 @@ function list_vhosts()
 	fi
 }
 
-
-######
-##first run
-######
-
 #this will create a "/etc/apache2/sites" folder where we will store our configs
 #and add a line to the http.conf so that apache knows to load the configs from there
 function first_run()
@@ -118,6 +113,7 @@ function first_run()
 function add_vhost
 {
 	message;
+	echo "Add a vhost";
 
 	read -p "Url: " host;
 	while [[ "$host" == "" ]] ; do
@@ -134,6 +130,38 @@ function add_vhost
 	create_folder ${path}
 	write_hosts_entry ${host};
 	write_virtual_host ${host} ${path};
+
+	restart_apache;
+
+	sleep 2;
+	menu;
+}
+
+#show the list of items for the remove function
+function remove_vhost()
+{
+	message;
+	echo "Remove a vhost";
+
+	list_vhosts;
+
+	remove_file ${menu_select};
+
+	restart_apache;
+
+	sleep 2;
+	menu;
+}
+
+#edit a vhost file
+function edit_vhost()
+{
+	message;
+	echo "Edit a vhost";
+
+	list_vhosts;
+
+	edit_host_file ${menu_select};
 
 	restart_apache;
 
@@ -172,8 +200,6 @@ function write_virtual_host()
 {
 	echo "Writing VirtualHost information into apache2 config files";
 
-	touch ${vhost_folder}/$1;
-
 	echo "<Directory \"$2\">\n" \
 	"\tOptions Indexes FollowSymlinks MultiViews\n" \
 	"\tAllowOverride All\n" \
@@ -184,24 +210,7 @@ function write_virtual_host()
 	"<VirtualHost *:80>\n" \
 	"\tServerName $1\n" \
 	"\tDocumentRoot \"$2\"\n" \
-	"</VirtualHost>\n" >> ${vhost_folder}/$1;
-}
-
-######
-##remove a vhost
-######
-
-#show the list of items for the remove function
-function remove_vhost()
-{
-	message;
-	echo "Remove a vhost";
-
-	list_vhosts;
-
-	remove_file ${menu_select};
-
-	restart_apache;
+	"</VirtualHost>\n" > ${vhost_folder}/$1;
 }
 
 #loops through the config folder and delete the file
@@ -215,36 +224,20 @@ function remove_file()
 		if [ "$1" == "$i" ];
 		then
 			read -p "Are you sure that you want to remove the vhost? (Y/n): " removehost_answer;
-			if [ ${removehost_answer} != "n" ];
+			if [ "$removehost_answer" == "n" ];
 			then
+				remove_vhost;
+			else
 				echo "removing ${entry}";
 				rm ${entry};
 
 				echo "removing hosts entry";
 				local host=${entry##/*/};
 				sed -i .bak "/${host}/d" ${hosts_file};
-			else
-				remove_vhost;
 			fi
 			break;
 		fi
 	done
-}
-
-
-######
-##edit vhost
-######
-
-#edit a vhost file
-function edit_vhost()
-{
-	message;
-	echo "Edit a vhost";
-
-	list_vhosts;
-
-	edit_host_file ${menu_select};
 }
 
 function edit_host_file()
@@ -261,5 +254,6 @@ function edit_host_file()
 	done
 }
 
+#start of the program
 is_root;
 menu;
