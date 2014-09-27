@@ -26,7 +26,7 @@ function message()
 	clear;
 	echo "+-----------------------------------------+";
 	echo "| Welcome to easy v-host                  |";
-	echo "| for use with the built in OS X apache2  |";
+	echo "| for use with the built-in OS X apache2  |";
 	echo "| © 2014 Kevin Richter - Version ${version}    |";
 	echo "+-----------------------------------------+";
 }
@@ -36,26 +36,36 @@ function menu()
 {
 	message;
 
-	echo "Press 1 if this is your first run";
-	echo "Press 2 to add a virtualhost";
-	echo "Press 3 to remove a virtualhost";
-	echo "Press 4 to edit a virtualhost";
+	local i=0;
+	menuItems=("to leave the program" "if this is your first run" "to add a virtualhost" "remove a virtualhost" "to edit a virtualhost");
+
+	for item in "${menuItems[@]}";
+	do
+		echo "Press $i $item";
+		((i++))
+	done
 	read -p "Number: " menu_choice;
 
 	case "$menu_choice" in
+		"0") exit;;
 		"1") first_run;;
 		"2") add_vhost;;
 		"3") remove_vhost;;
 		"4") edit_vhost;;
-		*)	 echo "not a valid menu item" && menu;;
+		*)	 read -n 1 -p "This is not a valid menu item" && menu;;
 	esac
 }
 
 #restart apache
 function restart_apache()
 {
-	echo "restarting apache";
+	echo "restarting apache...";
 	apachectl restart;
+}
+
+function wait_for_confirm()
+{
+	read -n 1 -p "Press any key to continue";
 }
 
 #give a list of all vhosts
@@ -95,12 +105,13 @@ function first_run()
 		echo "creating folder";
 		mkdir -p ${vhost_folder};
 		echo "writing to http.conf";
-		echo "Include $vhost_folder" >> /etc/apache2/httpd.conf;
+		echo "\nIncludeOptional $vhost_folder" >> /etc/apache2/httpd.conf;
 
-		echo "Your system was setup succesfully";
-		read -n 1 -P "Press any key to continue";
-		menu;
+		echo "Your system was setup succesfully!";
+		wait_for_confirm;
 	fi
+
+	menu;
 }
 
 
@@ -133,7 +144,7 @@ function add_vhost
 
 	restart_apache;
 
-	sleep 2;
+	wait_for_confirm;
 	menu;
 }
 
@@ -149,7 +160,7 @@ function remove_vhost()
 
 	restart_apache;
 
-	sleep 2;
+	wait_for_confirm;
 	menu;
 }
 
@@ -165,8 +176,17 @@ function edit_vhost()
 
 	restart_apache;
 
-	sleep 2;
+	wait_for_confirm;
 	menu;
+}
+
+function manage()
+{
+#	message;
+#	echo "Manage your virtualhosts";
+#
+	list_vhosts;
+
 }
 
 #create a folder for the vhosts if it doesnt exist
@@ -180,7 +200,7 @@ function create_folder
 		if [ ${folder_answer} == "y" ];
 		then
 			mkdir -p ${path};
-			parentdir=$(dirname ${path});
+			local parentdir=$(dirname ${path});
 			#chown ${whoami} ${path};
 			#chmod 755 ${path};
 			#chmod the dir and change owner
