@@ -98,7 +98,7 @@ function first_run()
 	echo "We will now setup your machine for use with easy vhost.";
 	echo "A folder will be create at ${vhost_folder}\nand a line will be added to the apache2 config file."
 	read -p "Are you okay with this? (Y/n): " answer;
-	if [ ${answer} == "n" ];
+	if [ "$answer" == "n" ];
 	then
 		echo "See you later";
 	else
